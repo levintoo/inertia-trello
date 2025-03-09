@@ -18,6 +18,17 @@ import {
     Delete02Icon,
     Logout04Icon,
     UserIcon,
+    TrelloIcon,
+    DashboardSquare01Icon,
+    LayoutTable02Icon,
+    Add01Icon,
+    Loading03Icon,
+    ChartBreakoutCircleIcon,
+    BulbIcon,
+    Tick01Icon,
+    Edit01Icon,
+    Settings01Icon,
+    FilterHorizontalIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -75,11 +86,11 @@ const secondaryNav = [
 <template>
     <Head title="Kanban" />
 
-    <div class="relative">
+    <div class="">
         <aside
-            class="fixed left-0 top-0 flex h-screen w-[250px] flex-col overflow-y-auto p-3 pr-2"
+            class="fixed left-0 top-0 flex h-screen w-64 flex-col overflow-y-auto p-3 pr-2"
         >
-            <Dropdown align="left" class="w-56">
+            <Dropdown align="left">
                 <template #trigger>
                     <span>
                         <button
@@ -141,7 +152,7 @@ const secondaryNav = [
                 <ul class="flex flex-col gap-1">
                     <li v-for="link in navLinks" :key="link.label">
                         <a
-                            class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-2.5 py-2 text-sm text-gray-800 hover:bg-gray-200/60 focus:bg-gray-100"
+                            class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200/60 focus:bg-gray-100"
                             href="#"
                             target="_parent"
                         >
@@ -161,7 +172,7 @@ const secondaryNav = [
                 <ul class="flex flex-col gap-1">
                     <li v-for="link in secondaryNav" :key="link.label">
                         <a
-                            class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-2.5 py-2 text-sm text-gray-800 hover:bg-gray-200/60 focus:bg-gray-100"
+                            class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200/60 focus:bg-gray-100"
                             href="#"
                             target="_parent"
                         >
@@ -178,7 +189,7 @@ const secondaryNav = [
 
             <div class="mt-3 grid grid-cols-2 gap-x-2">
                 <a
-                    class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border-blue-500 bg-gradient-to-l from-blue-500 to-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 hover:bg-gradient-to-r focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50"
+                    class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border-blue-500 bg-gradient-to-l from-blue-500 to-blue-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-blue-700 hover:bg-gradient-to-r focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50"
                     href="#"
                 >
                     <HugeiconsIcon
@@ -190,7 +201,7 @@ const secondaryNav = [
                 </a>
 
                 <a
-                    class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-transparent px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 focus:bg-slate-100 disabled:pointer-events-none disabled:opacity-50"
+                    class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-transparent px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 focus:bg-slate-100 disabled:pointer-events-none disabled:opacity-50"
                     href="#"
                 >
                     <HugeiconsIcon
@@ -203,12 +214,12 @@ const secondaryNav = [
             </div>
         </aside>
 
-        <main class="ml-[250px] min-h-screen rounded-xl p-2 pl-1">
+        <main class="ml-64 min-h-screen rounded-xl p-2 pl-1">
             <div class="min-h-[calc(100vh-1rem)] rounded-xl border shadow-sm">
                 <div
-                    class="inline-flex w-full items-center justify-between gap-3 border-b px-5 py-3"
+                    class="inline-flex w-full items-center justify-between gap-3 border-b border-gray-200 px-5 py-2.5"
                 >
-                    <h1 class="text-sm font-semibold text-gray-700">
+                    <h1 class="text-sm font-semibold text-gray-800">
                         Design Kanban
                     </h1>
 
@@ -228,6 +239,15 @@ const secondaryNav = [
                         </template>
 
                         <template #content>
+                            <DropdownLink :href="route('profile.edit')">
+                                <HugeiconsIcon
+                                    class="size-4 shrink-0"
+                                    :icon="Edit01Icon"
+                                    :stroke-width="2"
+                                />
+                                Rename Board
+                            </DropdownLink>
+
                             <DropdownLink
                                 :href="route('profile.edit')"
                                 class="text-red-500"
@@ -241,6 +261,181 @@ const secondaryNav = [
                             </DropdownLink>
                         </template>
                     </Dropdown>
+                </div>
+
+                <div
+                    class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5"
+                >
+                    <div class="flex gap-5 *:py-3">
+                        <div
+                            class="inline-flex items-center gap-2 text-sm text-gray-600"
+                        >
+                            <HugeiconsIcon
+                                class="size-4 shrink-0"
+                                :icon="DashboardSquare01Icon"
+                                :stroke-width="2"
+                            />
+                            Overview
+                        </div>
+
+                        <div
+                            class="inline-flex items-center gap-2 border-b-2 border-gray-800 text-sm font-semibold text-gray-800"
+                        >
+                            <HugeiconsIcon
+                                class="size-4 shrink-0"
+                                :icon="TrelloIcon"
+                                :stroke-width="2"
+                            />
+                            Board
+                        </div>
+
+                        <div
+                            class="inline-flex items-center gap-2 text-sm text-gray-600"
+                        >
+                            <HugeiconsIcon
+                                class="size-4 shrink-0"
+                                :icon="LayoutTable02Icon"
+                                :stroke-width="2"
+                            />
+                            List
+                        </div>
+                    </div>
+
+                    <div class="inline-flex items-center gap-x-1 py-1">
+                        <a
+                            class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 hover:bg-white/70 focus:bg-white/70 disabled:pointer-events-none disabled:opacity-50"
+                            href="#"
+                        >
+                            <HugeiconsIcon
+                                class="size-4 shrink-0"
+                                :icon="FilterHorizontalIcon"
+                                :stroke-width="2"
+                            />
+                            Filter
+                        </a>
+                        <a
+                            class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 hover:bg-white/70 focus:bg-white/70 disabled:pointer-events-none disabled:opacity-50"
+                            href="#"
+                        >
+                            <HugeiconsIcon
+                                class="size-4 shrink-0"
+                                :icon="Settings01Icon"
+                                :stroke-width="2"
+                            />
+                            Customize
+                        </a>
+                        <hr class="w-4 rotate-90" />
+                        <a
+                            class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border-blue-500 bg-gradient-to-l from-blue-500 to-blue-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-blue-700 hover:bg-gradient-to-r focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50"
+                            href="#"
+                        >
+                            Add List
+                            <HugeiconsIcon
+                                class="size-4 shrink-0"
+                                :icon="Add01Icon"
+                                :stroke-width="2"
+                            />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 px-3 py-3">
+                    <div
+                        class="w-64 rounded-lg border border-gray-200 bg-gray-50 p-1"
+                        v-for="card in [
+                            { title: 'Ideas', icon: BulbIcon },
+                            { title: 'To-Do', icon: Loading03Icon },
+                            {
+                                title: 'In-Progress',
+                                icon: ChartBreakoutCircleIcon,
+                            },
+                            { title: 'Complete', icon: Tick01Icon },
+                        ]"
+                        :key="card.title"
+                    >
+                        <div
+                            class="flex items-center justify-between gap-2 p-2"
+                        >
+                            <div
+                                class="inline-flex items-center gap-1.5 text-sm text-gray-700"
+                            >
+                                <HugeiconsIcon
+                                    class="size-4 shrink-0 text-gray-400"
+                                    :icon="card.icon"
+                                    :stroke-width="2"
+                                />
+                                {{ card.title }}
+                                <span class="text-gray-500">12</span>
+                            </div>
+
+                            <div
+                                class="inline-flex items-center gap-1 text-sm text-gray-700"
+                            >
+                                <button
+                                    class="rounded-lg p-1 text-gray-500 hover:bg-slate-100"
+                                >
+                                    <HugeiconsIcon
+                                        class="size-4 shrink-0"
+                                        :icon="Add01Icon"
+                                        :stroke-width="2"
+                                    />
+                                </button>
+
+                                <Dropdown align="right">
+                                    <template #trigger>
+                                        <span>
+                                            <button
+                                                class="rounded-lg p-1 text-gray-500 hover:bg-slate-100"
+                                            >
+                                                <HugeiconsIcon
+                                                    class="size-4 shrink-0"
+                                                    :icon="
+                                                        MoreHorizontalCircle01Icon
+                                                    "
+                                                    :stroke-width="2"
+                                                />
+                                            </button>
+                                        </span>
+                                    </template>
+
+                                    <template #content>
+                                        <DropdownLink
+                                            :href="route('profile.edit')"
+                                        >
+                                            <HugeiconsIcon
+                                                class="size-4 shrink-0"
+                                                :icon="Edit01Icon"
+                                                :stroke-width="2"
+                                            />
+                                            Rename List
+                                        </DropdownLink>
+
+                                        <DropdownLink
+                                            :href="route('profile.edit')"
+                                            class="text-red-500"
+                                        >
+                                            <HugeiconsIcon
+                                                class="size-4 shrink-0"
+                                                :icon="Delete02Icon"
+                                                :stroke-width="2"
+                                            />
+                                            Delete List
+                                        </DropdownLink>
+                                    </template>
+                                </Dropdown>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-1">
+                            <div
+                                v-for="i in 2"
+                                :key="i"
+                                class="rounded-lg border border-gray-200/70 bg-white p-2 text-sm text-gray-700"
+                            >
+                                Is Foo Bar ?
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
