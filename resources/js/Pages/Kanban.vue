@@ -1,6 +1,5 @@
 <script setup>
 import { Head, usePage } from '@inertiajs/vue3';
-import grain from '@/Assets/grain.jpg';
 import TrelloBoard from '@/Components/TrelloBoard.vue';
 import {
     AddTeamIcon,
@@ -29,6 +28,12 @@ import {
     Edit01Icon,
     Settings01Icon,
     FilterHorizontalIcon,
+    CheckmarkCircle01Icon,
+    Calendar01Icon,
+    MoreHorizontalCircle02Icon,
+    SmartPhone01Icon,
+    LabelImportantIcon,
+    Globe02Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -86,9 +91,9 @@ const secondaryNav = [
 <template>
     <Head title="Kanban" />
 
-    <div class="">
+    <div class="relative">
         <aside
-            class="fixed left-0 top-0 flex h-screen w-64 flex-col overflow-y-auto p-3 pr-2"
+            class="left-0 top-0 hidden h-screen flex-col overflow-y-auto p-3 pr-2 md:fixed md:flex md:w-64"
         >
             <Dropdown align="left">
                 <template #trigger>
@@ -214,8 +219,10 @@ const secondaryNav = [
             </div>
         </aside>
 
-        <main class="ml-64 min-h-screen rounded-xl p-2 pl-1">
-            <div class="min-h-[calc(100vh-1rem)] rounded-xl border shadow-sm">
+        <main class="min-h-screen md:ml-64 md:p-2 md:pl-1">
+            <div
+                class="min-h-[calc(100vh-1rem)] md:rounded-xl md:border md:shadow-sm"
+            >
                 <div
                     class="inline-flex w-full items-center justify-between gap-3 border-b border-gray-200 px-5 py-2.5"
                 >
@@ -264,9 +271,9 @@ const secondaryNav = [
                 </div>
 
                 <div
-                    class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5"
+                    class="flex flex-col justify-between overflow-y-auto border-b border-gray-200 bg-gray-50 px-5 md:flex-row md:gap-8"
                 >
-                    <div class="flex gap-5 *:py-3">
+                    <div class="flex shrink-0 gap-5 *:py-3">
                         <div
                             class="inline-flex items-center gap-2 text-sm text-gray-600"
                         >
@@ -313,18 +320,9 @@ const secondaryNav = [
                             />
                             Filter
                         </a>
-                        <a
-                            class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 hover:bg-white/70 focus:bg-white/70 disabled:pointer-events-none disabled:opacity-50"
-                            href="#"
-                        >
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="Settings01Icon"
-                                :stroke-width="2"
-                            />
-                            Customize
-                        </a>
+
                         <hr class="w-4 rotate-90" />
+
                         <a
                             class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border-blue-500 bg-gradient-to-l from-blue-500 to-blue-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-blue-700 hover:bg-gradient-to-r focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50"
                             href="#"
@@ -339,9 +337,9 @@ const secondaryNav = [
                     </div>
                 </div>
 
-                <div class="flex gap-3 px-3 py-3">
+                <div class="flex gap-3 overflow-y-auto px-3 py-3">
                     <div
-                        class="w-64 rounded-lg border border-gray-200 bg-gray-50 p-1"
+                        class="w-64 shrink-0 rounded-lg border border-gray-200 bg-gray-50 p-1"
                         v-for="card in [
                             { title: 'Ideas', icon: BulbIcon },
                             { title: 'To-Do', icon: Loading03Icon },
@@ -371,16 +369,6 @@ const secondaryNav = [
                             <div
                                 class="inline-flex items-center gap-1 text-sm text-gray-700"
                             >
-                                <button
-                                    class="rounded-lg p-1 text-gray-500 hover:bg-slate-100"
-                                >
-                                    <HugeiconsIcon
-                                        class="size-4 shrink-0"
-                                        :icon="Add01Icon"
-                                        :stroke-width="2"
-                                    />
-                                </button>
-
                                 <Dropdown align="right">
                                     <template #trigger>
                                         <span>
@@ -423,6 +411,16 @@ const secondaryNav = [
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
+
+                                <button
+                                    class="rounded-lg p-1 text-gray-500 hover:bg-slate-100"
+                                >
+                                    <HugeiconsIcon
+                                        class="size-4 shrink-0"
+                                        :icon="Add01Icon"
+                                        :stroke-width="2"
+                                    />
+                                </button>
                             </div>
                         </div>
 
@@ -430,25 +428,71 @@ const secondaryNav = [
                             <div
                                 v-for="i in 2"
                                 :key="i"
-                                class="rounded-lg border border-gray-200/70 bg-white p-2 text-sm text-gray-700"
+                                class="group relative space-y-1.5 rounded-lg border border-gray-200/70 bg-white p-2 text-sm text-gray-700 transition-all"
                             >
-                                Is Foo Bar ?
+                                <p>
+                                    Is Foo Bar ? Is Foo Bar ? Is Foo Bar ? Is
+                                    Foo Is Foo Bar ? Is Foo Bar ? Is Foo Bar ?
+                                    Is Foo Bar
+                                </p>
+                                <hr
+                                    class="border border-dashed border-gray-200 transition-all"
+                                />
+                                <div
+                                    class="flex items-center justify-between transition-all"
+                                >
+                                    <div class="inline-flex items-center gap-2">
+                                        <button
+                                            class="rounded-lg bg-white p-1 text-gray-500 hover:bg-slate-100"
+                                        >
+                                            <HugeiconsIcon
+                                                class="size-4 shrink-0"
+                                                :icon="CheckmarkCircle01Icon"
+                                                :stroke-width="2"
+                                            />
+                                        </button>
+
+                                        <button
+                                            class="hidden rounded-lg bg-white p-1 text-red-500 hover:bg-red-100"
+                                        >
+                                            <HugeiconsIcon
+                                                class="size-4 shrink-0"
+                                                :icon="Delete02Icon"
+                                                :stroke-width="2"
+                                            />
+                                        </button>
+
+                                        <button
+                                            class="rounded-lg bg-white p-1 text-gray-500 hover:bg-slate-100"
+                                        >
+                                            <HugeiconsIcon
+                                                class="size-4 shrink-0"
+                                                :icon="Edit01Icon"
+                                                :stroke-width="2"
+                                            />
+                                        </button>
+                                    </div>
+
+                                    <div
+                                        class="inline-flex items-center gap-2 text-gray-500"
+                                    >
+                                        <HugeiconsIcon
+                                            class="size-4 shrink-0"
+                                            :icon="Calendar01Icon"
+                                            :stroke-width="2"
+                                        />
+                                        12th May
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="relative overflow-hidden">
+                    <TrelloBoard />
+                </div>
             </div>
         </main>
-    </div>
-
-    <div
-        class="hidden overflow-hidden p-6 after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-3xl after:outline after:outline-2 after:-outline-offset-2 after:outline-white/20 after:content-['']"
-    >
-        <div
-            class="absolute inset-0 -z-10 hidden opacity-5"
-            :style="`background-image: url(${grain})`"
-        ></div>
-
-        <TrelloBoard />
     </div>
 </template>
