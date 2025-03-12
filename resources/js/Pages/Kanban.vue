@@ -1,130 +1,82 @@
 <script setup>
-import { Head, usePage } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import TrelloBoard from '@/Components/TrelloBoard.vue';
 import {
-    AddTeamIcon,
-    ArrowDown01Icon,
-    BoardMathIcon,
-    ClipboardIcon,
-    Clock01Icon,
-    GlobalIcon,
-    Home01Icon,
-    InformationDiamondIcon,
-    Note02Icon,
-    UserAdd02Icon,
-    HelpCircleIcon,
     MoreHorizontalCircle01Icon,
     Delete02Icon,
-    Logout04Icon,
-    UserIcon,
     TrelloIcon,
     DashboardSquare01Icon,
     LayoutTable02Icon,
     Add01Icon,
-    Loading03Icon,
-    ChartBreakoutCircleIcon,
-    BulbIcon,
-    Tick01Icon,
     Edit01Icon,
-    Settings01Icon,
     FilterHorizontalIcon,
-    CheckmarkCircle01Icon,
-    Calendar01Icon,
-    MoreHorizontalCircle02Icon,
-    SmartPhone01Icon,
-    LabelImportantIcon,
-    Globe02Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import { nextTick, ref } from 'vue';
+import InputError from '@/Components/InputError.vue';
+import { toast } from 'vue-sonner';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
-const page = usePage();
+defineProps({
+    columns: {
+        type: Object,
+        required: true,
+    },
+});
 
-const navLinks = [
-    {
-        label: 'Docs',
-        icon: Note02Icon,
-        href: '/',
-    },
-    {
-        label: 'Dashboard',
-        icon: Home01Icon,
-        href: '/',
-    },
-    {
-        label: 'Snapshots',
-        icon: Clock01Icon,
-        href: '/',
-    },
-    {
-        label: 'Clips',
-        icon: ClipboardIcon,
-        href: '/',
-    },
-    {
-        label: 'More',
-        icon: InformationDiamondIcon,
-        href: '/',
-    },
-];
+const creatingColumn = ref(false);
+const nameInput = ref(null);
 
-const secondaryNav = [
-    {
-        label: 'Everything',
-        icon: GlobalIcon,
-        href: '/',
-    },
-    {
-        label: 'Team Space',
-        icon: AddTeamIcon,
-        href: '/',
-    },
-    {
-        label: 'Product Requirements',
-        icon: BoardMathIcon,
-        href: '/',
-    },
-];
+const openCreatingColumnModal = () => {
+    creatingColumn.value = true;
+
+    nextTick(() => nameInput.value.focus());
+};
+
+const closeModal = () => {
+    creatingColumn.value = false;
+};
+
+const columnForm = useForm({
+    name: '',
+});
+
+const saveColumn = () => {
+    columnForm.post(route('columns.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeModal();
+            toast.success('Column has been created');
+        },
+        onError: () => nameInput.value.focus(),
+        onFinish: () => columnForm.reset(),
+    });
+};
 </script>
 
 <template>
-    <Head title="Kanban" />
-
-    <div class="relative">
-        <aside
-            class="left-0 top-0 hidden h-screen flex-col overflow-y-auto p-3 pr-2 md:fixed md:flex md:w-64"
+    <AppLayout title="Kanban">
+        <div
+            class="inline-flex w-full items-center justify-between gap-3 border-b border-gray-200 px-5 py-2.5"
         >
-            <Dropdown align="left">
+            <h1 class="text-sm font-semibold text-gray-800">Design Kanban</h1>
+
+            <Dropdown align="right">
                 <template #trigger>
                     <span>
                         <button
-                            class="flex w-full justify-between gap-3 rounded-lg p-2 hover:bg-slate-50"
+                            class="rounded-lg p-1 text-gray-500 hover:bg-slate-50"
                         >
-                            <span
-                                class="inline-flex flex-1 items-center justify-start gap-2"
-                            >
-                                <span
-                                    class="grid size-7 place-content-center rounded-lg bg-blue-100 p-2 font-semibold text-blue-500"
-                                >
-                                    {{ page.props.auth.user.name[0] }}
-                                </span>
-                                <span
-                                    class="line-clamp-1 text-start text-sm font-medium"
-                                >
-                                    {{ page.props.auth.user.name }}
-                                </span>
-                            </span>
-
-                            <span
-                                class="grid size-7 place-content-center rounded-lg text-slate-500"
-                            >
-                                <HugeiconsIcon
-                                    class="size-5"
-                                    :icon="ArrowDown01Icon"
-                                    :stroke-width="2"
-                                />
-                            </span>
+                            <HugeiconsIcon
+                                class="size-4 shrink-0"
+                                :icon="MoreHorizontalCircle01Icon"
+                                :stroke-width="2"
+                            />
                         </button>
                     </span>
                 </template>
@@ -133,366 +85,146 @@ const secondaryNav = [
                     <DropdownLink :href="route('profile.edit')">
                         <HugeiconsIcon
                             class="size-4 shrink-0"
-                            :icon="UserIcon"
+                            :icon="Edit01Icon"
                             :stroke-width="2"
                         />
-                        Profile
+                        Rename Board
                     </DropdownLink>
+
                     <DropdownLink
-                        :href="route('logout')"
-                        method="post"
-                        as="button"
+                        :href="route('profile.edit')"
+                        class="text-red-500"
                     >
                         <HugeiconsIcon
                             class="size-4 shrink-0"
-                            :icon="Logout04Icon"
+                            :icon="Delete02Icon"
                             :stroke-width="2"
                         />
-                        Log Out
+                        Delete Board
                     </DropdownLink>
                 </template>
             </Dropdown>
+        </div>
 
-            <div class="mt-3 rounded-lg bg-gray-50 p-1">
-                <ul class="flex flex-col gap-1">
-                    <li v-for="link in navLinks" :key="link.label">
-                        <a
-                            class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200/60 focus:bg-gray-100"
-                            href="#"
-                            target="_parent"
-                        >
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="link.icon"
-                                :stroke-width="2"
-                            />
-                            {{ link.label }}
-                        </a>
-                    </li>
-                </ul>
+        <div
+            class="flex flex-col justify-between overflow-y-auto border-b border-gray-200 bg-gray-50 px-5 md:flex-row md:gap-8"
+        >
+            <div class="flex shrink-0 gap-5 *:py-3">
+                <div
+                    class="inline-flex items-center gap-2 text-sm text-gray-600"
+                >
+                    <HugeiconsIcon
+                        class="size-4 shrink-0"
+                        :icon="DashboardSquare01Icon"
+                        :stroke-width="2"
+                    />
+                    Overview
+                </div>
+
+                <div
+                    class="inline-flex items-center gap-2 border-b-2 border-gray-800 text-sm font-semibold text-gray-800"
+                >
+                    <HugeiconsIcon
+                        class="size-4 shrink-0"
+                        :icon="TrelloIcon"
+                        :stroke-width="2"
+                    />
+                    Board
+                </div>
+
+                <div
+                    class="inline-flex items-center gap-2 text-sm text-gray-600"
+                >
+                    <HugeiconsIcon
+                        class="size-4 shrink-0"
+                        :icon="LayoutTable02Icon"
+                        :stroke-width="2"
+                    />
+                    List
+                </div>
             </div>
 
-            <div class="mt-3 flex-1 rounded-lg bg-gray-50 p-1">
-                <p class="px-2.5 py-2 text-sm text-gray-500">Your Boards</p>
-                <ul class="flex flex-col gap-1">
-                    <li v-for="link in secondaryNav" :key="link.label">
-                        <a
-                            class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-200/60 focus:bg-gray-100"
-                            href="#"
-                            target="_parent"
-                        >
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="link.icon"
-                                :stroke-width="2"
-                            />
-                            {{ link.label }}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="mt-3 grid grid-cols-2 gap-x-2">
+            <div class="inline-flex items-center gap-x-1 py-1">
                 <a
+                    class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 hover:bg-white/70 focus:bg-white/70 disabled:pointer-events-none disabled:opacity-50"
+                    href="#"
+                >
+                    <HugeiconsIcon
+                        class="size-4 shrink-0"
+                        :icon="FilterHorizontalIcon"
+                        :stroke-width="2"
+                    />
+                    Filter
+                </a>
+
+                <hr class="w-4 rotate-90" />
+
+                <button
+                    @click="openCreatingColumnModal"
                     class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border-blue-500 bg-gradient-to-l from-blue-500 to-blue-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-blue-700 hover:bg-gradient-to-r focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50"
-                    href="#"
                 >
+                    Add List
                     <HugeiconsIcon
                         class="size-4 shrink-0"
-                        :icon="UserAdd02Icon"
+                        :icon="Add01Icon"
                         :stroke-width="2"
                     />
-                    Invite
-                </a>
+                </button>
 
-                <a
-                    class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-transparent px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 focus:bg-slate-100 disabled:pointer-events-none disabled:opacity-50"
-                    href="#"
-                >
-                    <HugeiconsIcon
-                        class="size-4 shrink-0"
-                        :icon="HelpCircleIcon"
-                        :stroke-width="2"
-                    />
-                    Help
-                </a>
+                <Modal maxWidth="xl" :show="creatingColumn" @close="closeModal">
+                    <div class="border-b border-slate-200 bg-gray-50 px-6 py-4">
+                        <h2 class="text-sm font-semibold text-gray-700">
+                            New Column
+                        </h2>
+                    </div>
+
+                    <div class="px-6 py-4">
+                        <div class="">
+                            <InputLabel
+                                class="font-normal text-gray-700"
+                                for="name"
+                                value="Name"
+                            />
+
+                            <TextInput
+                                id="name"
+                                ref="nameInput"
+                                type="text"
+                                autocomplete="none"
+                                class="mt-1 block w-full rounded-lg text-sm text-gray-700 shadow-none"
+                                placeholder="To-Do"
+                                @keyup.enter="saveColumn"
+                                v-model="columnForm.name"
+                            />
+
+                            <InputError
+                                :message="columnForm.errors.name"
+                                class="mt-2"
+                            />
+                        </div>
+
+                        <div class="mt-4 flex justify-end">
+                            <button
+                                @click="closeModal"
+                                class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-600 hover:bg-white/70 focus:bg-white/70 disabled:pointer-events-none disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                @click="saveColumn"
+                                class="focus:outline-hidden ms-3 inline-flex items-center justify-center gap-x-2 rounded-lg border-blue-500 bg-gradient-to-l from-blue-500 to-blue-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-blue-700 hover:bg-gradient-to-r focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
             </div>
-        </aside>
+        </div>
 
-        <main class="min-h-screen md:ml-64 md:p-2 md:pl-1">
-            <div
-                class="min-h-[calc(100vh-1rem)] md:rounded-xl md:border md:shadow-sm"
-            >
-                <div
-                    class="inline-flex w-full items-center justify-between gap-3 border-b border-gray-200 px-5 py-2.5"
-                >
-                    <h1 class="text-sm font-semibold text-gray-800">
-                        Design Kanban
-                    </h1>
-
-                    <Dropdown align="right">
-                        <template #trigger>
-                            <span>
-                                <button
-                                    class="rounded-lg p-1 text-gray-500 hover:bg-slate-50"
-                                >
-                                    <HugeiconsIcon
-                                        class="size-4 shrink-0"
-                                        :icon="MoreHorizontalCircle01Icon"
-                                        :stroke-width="2"
-                                    />
-                                </button>
-                            </span>
-                        </template>
-
-                        <template #content>
-                            <DropdownLink :href="route('profile.edit')">
-                                <HugeiconsIcon
-                                    class="size-4 shrink-0"
-                                    :icon="Edit01Icon"
-                                    :stroke-width="2"
-                                />
-                                Rename Board
-                            </DropdownLink>
-
-                            <DropdownLink
-                                :href="route('profile.edit')"
-                                class="text-red-500"
-                            >
-                                <HugeiconsIcon
-                                    class="size-4 shrink-0"
-                                    :icon="Delete02Icon"
-                                    :stroke-width="2"
-                                />
-                                Delete Board
-                            </DropdownLink>
-                        </template>
-                    </Dropdown>
-                </div>
-
-                <div
-                    class="flex flex-col justify-between overflow-y-auto border-b border-gray-200 bg-gray-50 px-5 md:flex-row md:gap-8"
-                >
-                    <div class="flex shrink-0 gap-5 *:py-3">
-                        <div
-                            class="inline-flex items-center gap-2 text-sm text-gray-600"
-                        >
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="DashboardSquare01Icon"
-                                :stroke-width="2"
-                            />
-                            Overview
-                        </div>
-
-                        <div
-                            class="inline-flex items-center gap-2 border-b-2 border-gray-800 text-sm font-semibold text-gray-800"
-                        >
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="TrelloIcon"
-                                :stroke-width="2"
-                            />
-                            Board
-                        </div>
-
-                        <div
-                            class="inline-flex items-center gap-2 text-sm text-gray-600"
-                        >
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="LayoutTable02Icon"
-                                :stroke-width="2"
-                            />
-                            List
-                        </div>
-                    </div>
-
-                    <div class="inline-flex items-center gap-x-1 py-1">
-                        <a
-                            class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 hover:bg-white/70 focus:bg-white/70 disabled:pointer-events-none disabled:opacity-50"
-                            href="#"
-                        >
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="FilterHorizontalIcon"
-                                :stroke-width="2"
-                            />
-                            Filter
-                        </a>
-
-                        <hr class="w-4 rotate-90" />
-
-                        <a
-                            class="focus:outline-hidden inline-flex items-center justify-center gap-x-2 rounded-lg border-blue-500 bg-gradient-to-l from-blue-500 to-blue-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-blue-700 hover:bg-gradient-to-r focus:bg-blue-700 disabled:pointer-events-none disabled:opacity-50"
-                            href="#"
-                        >
-                            Add List
-                            <HugeiconsIcon
-                                class="size-4 shrink-0"
-                                :icon="Add01Icon"
-                                :stroke-width="2"
-                            />
-                        </a>
-                    </div>
-                </div>
-
-                <div class="flex gap-3 overflow-y-auto px-3 py-3">
-                    <div
-                        class="w-64 shrink-0 rounded-lg border border-gray-200 bg-gray-50 p-1"
-                        v-for="card in [
-                            { title: 'Ideas', icon: BulbIcon },
-                            { title: 'To-Do', icon: Loading03Icon },
-                            {
-                                title: 'In-Progress',
-                                icon: ChartBreakoutCircleIcon,
-                            },
-                            { title: 'Complete', icon: Tick01Icon },
-                        ]"
-                        :key="card.title"
-                    >
-                        <div
-                            class="flex items-center justify-between gap-2 p-2"
-                        >
-                            <div
-                                class="inline-flex items-center gap-1.5 text-sm text-gray-700"
-                            >
-                                <HugeiconsIcon
-                                    class="size-4 shrink-0 text-gray-400"
-                                    :icon="card.icon"
-                                    :stroke-width="2"
-                                />
-                                {{ card.title }}
-                                <span class="text-gray-500">12</span>
-                            </div>
-
-                            <div
-                                class="inline-flex items-center gap-1 text-sm text-gray-700"
-                            >
-                                <Dropdown align="right">
-                                    <template #trigger>
-                                        <span>
-                                            <button
-                                                class="rounded-lg p-1 text-gray-500 hover:bg-slate-100"
-                                            >
-                                                <HugeiconsIcon
-                                                    class="size-4 shrink-0"
-                                                    :icon="
-                                                        MoreHorizontalCircle01Icon
-                                                    "
-                                                    :stroke-width="2"
-                                                />
-                                            </button>
-                                        </span>
-                                    </template>
-
-                                    <template #content>
-                                        <DropdownLink
-                                            :href="route('profile.edit')"
-                                        >
-                                            <HugeiconsIcon
-                                                class="size-4 shrink-0"
-                                                :icon="Edit01Icon"
-                                                :stroke-width="2"
-                                            />
-                                            Rename List
-                                        </DropdownLink>
-
-                                        <DropdownLink
-                                            :href="route('profile.edit')"
-                                            class="text-red-500"
-                                        >
-                                            <HugeiconsIcon
-                                                class="size-4 shrink-0"
-                                                :icon="Delete02Icon"
-                                                :stroke-width="2"
-                                            />
-                                            Delete List
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-
-                                <button
-                                    class="rounded-lg p-1 text-gray-500 hover:bg-slate-100"
-                                >
-                                    <HugeiconsIcon
-                                        class="size-4 shrink-0"
-                                        :icon="Add01Icon"
-                                        :stroke-width="2"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-1">
-                            <div
-                                v-for="i in 2"
-                                :key="i"
-                                class="group relative space-y-1.5 rounded-lg border border-gray-200/70 bg-white p-2 text-sm text-gray-700 transition-all"
-                            >
-                                <p>
-                                    Is Foo Bar ? Is Foo Bar ? Is Foo Bar ? Is
-                                    Foo Is Foo Bar ? Is Foo Bar ? Is Foo Bar ?
-                                    Is Foo Bar
-                                </p>
-                                <hr
-                                    class="border border-dashed border-gray-200 transition-all"
-                                />
-                                <div
-                                    class="flex items-center justify-between transition-all"
-                                >
-                                    <div class="inline-flex items-center gap-2">
-                                        <button
-                                            class="rounded-lg bg-white p-1 text-gray-500 hover:bg-slate-100"
-                                        >
-                                            <HugeiconsIcon
-                                                class="size-4 shrink-0"
-                                                :icon="CheckmarkCircle01Icon"
-                                                :stroke-width="2"
-                                            />
-                                        </button>
-
-                                        <button
-                                            class="hidden rounded-lg bg-white p-1 text-red-500 hover:bg-red-100"
-                                        >
-                                            <HugeiconsIcon
-                                                class="size-4 shrink-0"
-                                                :icon="Delete02Icon"
-                                                :stroke-width="2"
-                                            />
-                                        </button>
-
-                                        <button
-                                            class="rounded-lg bg-white p-1 text-gray-500 hover:bg-slate-100"
-                                        >
-                                            <HugeiconsIcon
-                                                class="size-4 shrink-0"
-                                                :icon="Edit01Icon"
-                                                :stroke-width="2"
-                                            />
-                                        </button>
-                                    </div>
-
-                                    <div
-                                        class="inline-flex items-center gap-2 text-gray-500"
-                                    >
-                                        <HugeiconsIcon
-                                            class="size-4 shrink-0"
-                                            :icon="Calendar01Icon"
-                                            :stroke-width="2"
-                                        />
-                                        12th May
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative overflow-hidden">
-                    <TrelloBoard />
-                </div>
-            </div>
-        </main>
-    </div>
+        <div class="relative overflow-hidden">
+            <TrelloBoard />
+        </div>
+    </AppLayout>
 </template>

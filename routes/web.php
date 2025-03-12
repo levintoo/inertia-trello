@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\ColumnController;
+use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +18,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('/dashboard', 'Dashboard')
         ->name('dashboard');
 
-    Route::inertia('/kanban', 'Kanban')
+    Route::get('/kanban', KanbanController::class)
         ->name('kanban');
+
+    Route::controller(ColumnController::class)
+        ->name('columns.')
+        ->prefix('columns')
+        ->group(function () {
+            Route::post('/create', 'store')->name('store');
+        });
+
+    Route::controller(TaskController::class)
+        ->name('tasks.')
+        ->prefix('tasks')
+        ->group(function () {
+            Route::post('/create', 'store')->name('store');
+        });
 });
 
 Route::controller(ProfileController::class)

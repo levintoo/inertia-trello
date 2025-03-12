@@ -22,5 +22,6 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+    <div id="modals"></div>
     </body>
 </html>

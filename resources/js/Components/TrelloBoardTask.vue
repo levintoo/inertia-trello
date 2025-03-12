@@ -8,17 +8,20 @@ import {
 import { HugeiconsIcon } from '@hugeicons/vue';
 
 defineProps({
-    task: {},
+    task: {
+        type: Object,
+        required: true,
+    },
 });
 </script>
 
 <template>
     <div
-        :key="task.title"
+        :key="task.name"
         class="group relative space-y-2 rounded-lg border border-gray-200/70 bg-white p-2 text-sm text-gray-700 transition-all"
     >
         <p>
-            {{ task.title }}
+            {{ task.name }}
         </p>
         <hr class="border-transparent" />
         <div class="flex items-center justify-between transition-all">
@@ -54,28 +57,16 @@ defineProps({
                 </button>
             </div>
 
-            <div class="inline-flex items-center gap-2 text-gray-500">
+            <div
+                v-if="task.due_date"
+                class="inline-flex items-center gap-2 text-gray-500"
+            >
                 <HugeiconsIcon
                     class="size-4 shrink-0"
                     :icon="Calendar01Icon"
                     :stroke-width="2"
                 />
-                {{
-                    task.created
-                        .toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'long',
-                        })
-                        .replace(/\b(\d{1,2})\b/, (match) => {
-                            const suffixes = ['th', 'st', 'nd', 'rd'];
-                            const v = match % 100;
-                            const suffix =
-                                suffixes[(v - 20) % 10] ||
-                                suffixes[v] ||
-                                suffixes[0];
-                            return match + suffix;
-                        })
-                }}
+                {{ task.short_due_date }}
             </div>
         </div>
     </div>
