@@ -16,8 +16,8 @@ import {
     UserIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/ui/DropdownLink.vue';
+import Dropdown from '@/Components/ui/Dropdown.vue';
 import { Toaster } from 'vue-sonner';
 
 const page = usePage();

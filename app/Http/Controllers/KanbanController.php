@@ -15,7 +15,9 @@ class KanbanController extends Controller
         $columns = Column::query()
             ->orderBy('position', 'ASC')
             ->whereBelongsTo(auth()->user())
-            ->with('tasks')
+            ->with('tasks', function ($q) {
+                $q->orderBy('position', 'ASC');
+            })
             ->get();
 
         return inertia('Kanban', compact('columns'));

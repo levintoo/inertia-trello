@@ -6,6 +6,7 @@ import {
     Edit01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/vue';
+import { Link } from '@inertiajs/vue3';
 
 defineProps({
     task: {
@@ -18,33 +19,42 @@ defineProps({
 <template>
     <div
         :key="task.name"
-        class="group relative space-y-2 rounded-lg border border-gray-200/70 bg-white p-2 text-sm text-gray-700 transition-all"
+        class="group relative space-y-2 rounded-lg border border-slate-200/70 bg-white p-2 text-sm text-gray-700 transition-all"
     >
         <p>
-            {{ task.name }}
+            {{ task.column_id }} {{ task.id }} {{ task.name }}
+            {{ task.position }}
         </p>
         <hr class="border-transparent" />
         <div class="flex items-center justify-between transition-all">
             <div class="inline-flex items-center gap-2">
-                <button
-                    class="rounded-lg bg-white p-1 text-gray-500 hover:bg-slate-100"
+                <Link
+                    :href="route('tasks.complete', task.id)"
+                    method="PATCH"
+                    as="button"
+                    v-if="!task.completed_at"
+                    class="rounded-lg bg-white p-1 text-gray-500 hover:bg-green-100"
                 >
                     <HugeiconsIcon
                         class="size-4 shrink-0"
                         :icon="CheckmarkCircle01Icon"
                         :stroke-width="2"
                     />
-                </button>
+                </Link>
 
-                <button
-                    class="hidden rounded-lg bg-white p-1 text-red-500 hover:bg-red-100"
+                <Link
+                    :href="route('tasks.delete', task.id)"
+                    method="DELETE"
+                    as="button"
+                    v-else
+                    class="rounded-lg bg-white p-1 text-gray-500 hover:bg-red-100"
                 >
                     <HugeiconsIcon
                         class="size-4 shrink-0"
                         :icon="Delete02Icon"
                         :stroke-width="2"
                     />
-                </button>
+                </Link>
 
                 <button
                     class="rounded-lg bg-white p-1 text-gray-500 hover:bg-slate-100"

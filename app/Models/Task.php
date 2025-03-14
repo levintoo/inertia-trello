@@ -38,7 +38,7 @@ class Task extends Model
     }
 
     protected $appends = [
-      'short_due_date',
+        'short_due_date',
     ];
 
     public function getShortDueDateAttribute(): ?string

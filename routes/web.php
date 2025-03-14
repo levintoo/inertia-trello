@@ -26,6 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->prefix('columns')
         ->group(function () {
             Route::post('/create', 'store')->name('store');
+            Route::delete('/{column}', 'destroy')->name('delete');
+            Route::patch('/{column}/update', 'update')->name('update');
+            Route::patch('/{column}/reorder', 'reorder')->name('reorder');
         });
 
     Route::controller(TaskController::class)
@@ -33,6 +36,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->prefix('tasks')
         ->group(function () {
             Route::post('/create', 'store')->name('store');
+            Route::patch('/{task}', 'complete')->name('complete');
+            Route::delete('/{task}', 'destroy')->name('delete');
+            Route::patch('/{task}/reorder', 'reorder')->name('reorder');
         });
 });
 
